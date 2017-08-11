@@ -10,7 +10,27 @@ all: main; ./main
 # This needs to be less brittle. We're hard-coding system paths and library versions.
 # Instead, we should search for the latest version of the required library. Consider
 # using CMake, pkg-config, or ghc --print-libdir.
+VERSION=8.0.2
+HSHOME=/Library/Frameworks/GHC.framework/Versions/8.0.2-x86_64/usr
+HSLIB=$(HSHOME)/lib/ghc-8.0.2
 main: main.cpp times_two.o Hello.o TimesSix.o; g++ \
+  -liconv \
+  -I$(HSLIB)/include \
+  -L$(HSLIB)/rts \
+  -lHSrts \
+  -lCffi \
+  -L$(HSLIB)/base-4.9.1.0 \
+  -lHSbase-4.9.1.0 \
+  -L$(HSLIB)/ghc-prim-0.5.0.0 \
+  -lHSghc-prim-0.5.0.0 \
+  -L/$(HSLIB)/integer-gmp-1.0.0.1 \
+  -lHSinteger-gmp-1.0.0.1 \
+  -lHSghc-prim-0.5.0.0 \
+  -fno-stack-protector \
+  -Wall \
+  -o main main.cpp times_two.o Hello.o TimesSix.o
+
+mainorig: main.cpp times_two.o Hello.o TimesSix.o; g++ \
   -liconv \
   -I/usr/local/Cellar/ghc/7.6.3/lib/ghc-7.6.3/include \
   -L/usr/local/Cellar/ghc/7.6.3/lib/ghc-7.6.3 \
